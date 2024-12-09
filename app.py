@@ -1,10 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for
 from pymongo import MongoClient
+from bson.objectid import ObjectId  # Import ObjectId
 
 app = Flask(__name__)
 
 # MongoDB connection
-client = MongoClient("your-mongodb-connection-string")
+client = MongoClient("mongodb+srv://test:test@cluster0.sxci1.mongodb.net/?retryWrites=true&w=majority")
 db = client.todo_app  # Database name
 todos = db.todos       # Collection name
 
@@ -22,13 +23,19 @@ def add_todo():
 
 @app.route("/complete/<task_id>")
 def complete_todo(task_id):
-    todos.update_one({"_id": ObjectId(task_id)}, {"$set": {"done": True}})
+    try:
+        todos.update_one({"_id": ObjectId(task_id)}, {"$set": {"done": True}})
+    except Exception as e:
+        print(f"Error marking task as complete: {e}")
     return redirect(url_for("index"))
 
 @app.route("/delete/<task_id>")
 def delete_todo(task_id):
-    todos.delete_one({"_id": ObjectId(task_id)})
+    try:
+        todos.delete_one({"_id": ObjectId(task_id)})
+    except Exception as e:
+        print(f"Error deleting task: {e}")
     return redirect(url_for("index"))
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)  # Enable debug mode for better error visibility

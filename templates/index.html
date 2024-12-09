@@ -3,26 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>To-Do App</title>
+    <title>To-Do List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            text-align: center;
+            padding: 20px;
+            background-color: #333;
+            color: white;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        form {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 10px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .done {
+            text-decoration: line-through;
+            color: #bbb;
+        }
+
+        .actions a {
+            margin-left: 10px;
+            color: #007BFF;
+            text-decoration: none;
+        }
+
+        .actions a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+                width: 95%;
+            }
+
+            input[type="text"] {
+                width: 70%;
+            }
+
+            button {
+                width: 25%;
+            }
+        }
+    </style>
 </head>
 <body>
     <h1>To-Do List</h1>
-    <form action="/add" method="POST">
-        <input type="text" name="task" placeholder="New task" required>
-        <button type="submit">Add</button>
-    </form>
-    <ul>
-        {% for todo in todos %}
-        <li>
-            <span style="text-decoration: {{ 'line-through' if todo['done'] else 'none' }};">
-                {{ todo['task'] }}
-            </span>
-            {% if not todo['done'] %}
-            <a href="/complete/{{ todo['_id'] }}">Mark as Complete</a>
-            {% endif %}
-            <a href="/delete/{{ todo['_id'] }}">Delete</a>
-        </li>
-        {% endfor %}
-    </ul>
+    <div class="container">
+        <form action="/add" method="POST">
+            <input type="text" name="task" placeholder="New task" required>
+            <button type="submit">Add</button>
+        </form>
+
+        <ul>
+            {% for todo in todos %}
+            <li>
+                <span class="{{ 'done' if todo['done'] else '' }}">
+                    {{ todo['task'] }}
+                </span>
+                <div class="actions">
+                    {% if not todo['done'] %}
+                    <a href="{{ url_for('complete_todo', task_id=str(todo['_id'])) }}">Mark as Complete</a>
+                    {% endif %}
+                    <a href="{{ url_for('delete_todo', task_id=str(todo['_id'])) }}">Delete</a>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
 </body>
 </html>
