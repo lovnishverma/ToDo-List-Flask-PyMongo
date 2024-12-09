@@ -4,20 +4,103 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Update Task</title>
+    <style>
+        /* Reset some default styles */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            color: #444;
+            text-align: center;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 500px;
+            background: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            text-decoration: none;
+            color: #4CAF50;
+        }
+
+        a:hover {
+            color: #3e8e41;
+        }
+
+        /* Mobile-friendly adjustments */
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+
+            button, input[type="text"] {
+                font-size: 14px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Update Task</h1>
-    <form action="{{ url_for('update_todo', task_id=task['_id']) }}" method="POST">
-        <label for="updated_task">Task:</label>
-        <input
-            type="text"
-            id="updated_task"
-            name="updated_task"
-            value="{{ task['task'] }}"
-            required
-        />
-        <button type="submit">Update</button>
-    </form>
-    <a href="{{ url_for('index') }}">Back to Tasks</a>
+    <div class="container">
+        <h1>Update Task</h1>
+        <form action="{{ url_for('update_todo', task_id=task['_id']) }}" method="POST">
+            <label for="updated_task">Task:</label>
+            <input
+                type="text"
+                id="updated_task"
+                name="updated_task"
+                value="{{ task['task'] }}"
+                required
+            />
+            <button type="submit">Update</button>
+        </form>
+        <a href="{{ url_for('index') }}">Back to Tasks</a>
+    </div>
 </body>
 </html>

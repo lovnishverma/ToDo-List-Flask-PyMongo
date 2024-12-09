@@ -5,7 +5,10 @@ from bson.objectid import ObjectId  # For handling MongoDB's ObjectId
 app = Flask(__name__)
 
 # MongoDB connection
+# Connect to MongoDB Atlas using the provided connection string
 client = MongoClient("mongodb+srv://test:test@cluster0.sxci1.mongodb.net/?retryWrites=true&w=majority")
+
+# Database and Collection setup
 db = client.todo_app  # Database name
 todos = db.todos       # Collection name
 
@@ -13,10 +16,13 @@ todos = db.todos       # Collection name
 @app.route("/")
 def index():
     """
-    Fetch all tasks from the database and display them on the homepage.
+    Fetch all tasks from the MongoDB database and display them on the homepage.
+    Each task includes:
+    - Task description
+    - Completion status (done or not done)
     """
     try:
-        all_todos = todos.find()  # Fetch all tasks
+        all_todos = todos.find()  # Retrieve all tasks from the "todos" collection
     except Exception as e:
         print("Error fetching tasks: {}".format(e))
         all_todos = []
@@ -26,12 +32,14 @@ def index():
 @app.route("/add", methods=["POST"])
 def add_todo():
     """
-    Add a new task to the database.
+    Add a new task to the MongoDB database.
+    - Accepts task description from the form.
+    - Saves it with a default "not done" status.
     """
-    task = request.form.get("task")  # Get the task from the form
+    task = request.form.get("task")  # Get the task description from the form
     if task:
         try:
-            todos.insert_one({"task": task, "done": False})  # Add task to the database
+            todos.insert_one({"task": task, "done": False})  # Insert the task into the collection
         except Exception as e:
             print("Error adding task: {}".format(e))
     return redirect(url_for("index"))
@@ -40,7 +48,9 @@ def add_todo():
 @app.route("/complete/<task_id>")
 def complete_todo(task_id):
     """
-    Mark a task as completed based on its ID.
+    Mark a task as completed in the MongoDB database.
+    - Finds the task by its ObjectId.
+    - Updates the "done" field to True.
     """
     try:
         todos.update_one({"_id": ObjectId(task_id)}, {"$set": {"done": True}})
@@ -52,7 +62,8 @@ def complete_todo(task_id):
 @app.route("/delete/<task_id>")
 def delete_todo(task_id):
     """
-    Delete a task from the database based on its ID.
+    Delete a task from the MongoDB database.
+    - Finds the task by its ObjectId and removes it.
     """
     try:
         todos.delete_one({"_id": ObjectId(task_id)})
@@ -64,7 +75,9 @@ def delete_todo(task_id):
 @app.route("/update/<task_id>", methods=["GET", "POST"])
 def update_todo(task_id):
     """
-    Display the current task in an editable form and update it.
+    Update a task in the MongoDB database.
+    - GET request: Fetches the current task and displays it in an editable form.
+    - POST request: Updates the task description in the database.
     """
     if request.method == "GET":
         # Fetch the task to be updated
@@ -76,8 +89,8 @@ def update_todo(task_id):
             return redirect(url_for("index"))
     
     if request.method == "POST":
-        # Update the task in the database
-        updated_task = request.form.get("updated_task")  # Get updated task description
+        # Update the task description in the database
+        updated_task = request.form.get("updated_task")
         if updated_task:
             try:
                 todos.update_one({"_id": ObjectId(task_id)}, {"$set": {"task": updated_task}})
@@ -89,12 +102,15 @@ def update_todo(task_id):
 @app.route("/summary")
 def summary():
     """
-    Display a summary of tasks (total, completed, pending).
+    Display a summary of tasks using MongoDB aggregation.
+    - Total tasks: Count of all documents in the collection.
+    - Completed tasks: Count of documents where "done" is True.
+    - Pending tasks: Count of documents where "done" is False.
     """
     try:
-        total_tasks = todos.count_documents({})  # Total tasks
-        completed_tasks = todos.count_documents({"done": True})  # Completed tasks
-        pending_tasks = todos.count_documents({"done": False})  # Pending tasks
+        total_tasks = todos.count_documents({})  # Count all tasks
+        completed_tasks = todos.count_documents({"done": True})  # Count completed tasks
+        pending_tasks = todos.count_documents({"done": False})  # Count pending tasks
     except Exception as e:
         print("Error fetching summary: {}".format(e))
         total_tasks = completed_tasks = pending_tasks = 0

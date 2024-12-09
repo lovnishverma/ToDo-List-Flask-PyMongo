@@ -9,7 +9,7 @@
 </head>
 <body>
     <div class="container mt-5">
-        <h1 class="text-center mb-4">To-Do List</h1>
+        <h1 class="text-center mb-4">To-Do List </h1><marquee> <h3 class="text-center mb-4"> MongoDB (CRUD operations, Aggregation) </h3></marquee>
 
         <!-- Add Task Form -->
         <form action="/add" method="POST" class="mb-4">
@@ -45,7 +45,9 @@
                         <a href="/complete/{{ todo._id }}" class="btn btn-success btn-sm">Mark Complete</a>
                         {% endif %}
                         <!-- Edit Task -->
-                        <a href="/edit/{{ todo._id }}" class="btn btn-warning btn-sm">Edit</a>
+                        
+                      <a href="{{ url_for('update_todo', task_id=todo['_id']) }}" class="btn btn-warning btn-sm">Edit</a>
+
                         <!-- Delete Task -->
                         <a href="/delete/{{ todo._id }}" class="btn btn-danger btn-sm">Delete</a>
                     </td>
