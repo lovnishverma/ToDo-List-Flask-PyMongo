@@ -6,6 +6,8 @@ app = Flask(__name__)
 
 # MongoDB connection
 client = MongoClient("mongodb+srv://test:test@cluster0.sxci1.mongodb.net/?retryWrites=true&w=majority")
+#CONNECTION_STRING = "mongodb+srv://test:test@flask-mongodb-atlas-1g8po.mongodb.net/test?retryWrites=true&w=majority"
+#CONNECTION_STRING = "mongodb+srv://test:test@studentdb.sxci1.mongodb.net/?retryWrites=true&w=majority"
 db = client.todo_app  # Database name
 todos = db.todos       # Collection name
 
@@ -26,7 +28,7 @@ def complete_todo(task_id):
     try:
         todos.update_one({"_id": ObjectId(task_id)}, {"$set": {"done": True}})
     except Exception as e:
-        print(f"Error marking task as complete: {e}")
+        print("Error marking task as complete: {}".format(e))  # Use .format() instead of f-string
     return redirect(url_for("index"))
 
 @app.route("/delete/<task_id>")
@@ -34,7 +36,7 @@ def delete_todo(task_id):
     try:
         todos.delete_one({"_id": ObjectId(task_id)})
     except Exception as e:
-        print(f"Error deleting task: {e}")
+        print("Error deleting task: {}".format(e))  # Use .format() instead of f-string
     return redirect(url_for("index"))
 
 if __name__ == "__main__":

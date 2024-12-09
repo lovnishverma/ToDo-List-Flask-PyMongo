@@ -1,53 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>To-Do List</title>
+    <title>To-Do App</title>
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         h1 {
             text-align: center;
-            padding: 20px;
-            background-color: #333;
-            color: white;
-        }
-
-        .container {
-            max-width: 600px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            color: #333;
         }
 
         form {
             display: flex;
             justify-content: space-between;
+            margin-bottom: 20px;
         }
 
         input[type="text"] {
-            width: 80%;
+            width: 75%;
             padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
             font-size: 16px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
         }
 
         button {
+            width: 20%;
             padding: 10px;
-            font-size: 16px;
             background-color: #4CAF50;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 4px;
             cursor: pointer;
         }
 
@@ -63,67 +64,84 @@
         li {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             padding: 10px;
+            background-color: #fafafa;
+            border: 1px solid #eee;
+            border-radius: 4px;
             margin-bottom: 10px;
-            background-color: #fff;
-            border-radius: 5px;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .task {
+            flex: 1;
+            font-size: 18px;
         }
 
         .done {
             text-decoration: line-through;
-            color: #bbb;
+            color: #888;
         }
 
-        .actions a {
-            margin-left: 10px;
-            color: #007BFF;
+        a {
             text-decoration: none;
+            color: #007bff;
+            margin-left: 10px;
         }
 
-        .actions a:hover {
+        a:hover {
             text-decoration: underline;
         }
 
-        @media (max-width: 600px) {
-            .container {
-                padding: 10px;
-                width: 95%;
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            form {
+                flex-direction: column;
             }
 
             input[type="text"] {
-                width: 70%;
+                width: 100%;
+                margin-bottom: 10px;
             }
 
             button {
-                width: 25%;
+                width: 100%;
+            }
+
+            .actions {
+                gap: 5px;
             }
         }
     </style>
 </head>
+
 <body>
-    <h1>To-Do List</h1>
     <div class="container">
+        <h1>To-Do List</h1>
         <form action="/add" method="POST">
             <input type="text" name="task" placeholder="New task" required>
             <button type="submit">Add</button>
         </form>
-
         <ul>
             {% for todo in todos %}
             <li>
-                <span class="{{ 'done' if todo['done'] else '' }}">
+                <span class="task {{ 'done' if todo['done'] else '' }}">
                     {{ todo['task'] }}
                 </span>
                 <div class="actions">
                     {% if not todo['done'] %}
-                    <a href="{{ url_for('complete_todo', task_id=str(todo['_id'])) }}">Mark as Complete</a>
+                    <a href="{{ url_for('complete_todo', task_id=todo['_id']|string) }}">Mark as Complete</a>
                     {% endif %}
-                    <a href="{{ url_for('delete_todo', task_id=str(todo['_id'])) }}">Delete</a>
+                    <a href="{{ url_for('delete_todo', task_id=todo['_id']|string) }}">Delete</a>
                 </div>
             </li>
             {% endfor %}
         </ul>
     </div>
 </body>
+
 </html>
