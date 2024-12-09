@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Task</title>
+</head>
+<body>
+    <h1>Update Task</h1>
+    <form action="{{ url_for('update_todo', task_id=task['_id']) }}" method="POST">
+        <label for="updated_task">Task:</label>
+        <input
+            type="text"
+            id="updated_task"
+            name="updated_task"
+            value="{{ task['task'] }}"
+            required
+        />
+        <button type="submit">Update</button>
+    </form>
+    <a href="{{ url_for('index') }}">Back to Tasks</a>
+</body>
+</html>
