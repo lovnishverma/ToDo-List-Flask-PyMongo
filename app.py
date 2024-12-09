@@ -28,7 +28,7 @@ def complete_todo(task_id):
     try:
         todos.update_one({"_id": ObjectId(task_id)}, {"$set": {"done": True}})
     except Exception as e:
-        print("Error marking task as complete: {}".format(e))  # Use .format() instead of f-string
+        print("Error marking task as complete: {}".format(e))
     return redirect(url_for("index"))
 
 @app.route("/delete/<task_id>")
@@ -36,7 +36,7 @@ def delete_todo(task_id):
     try:
         todos.delete_one({"_id": ObjectId(task_id)})
     except Exception as e:
-        print("Error deleting task: {}".format(e))  # Use .format() instead of f-string
+        print("Error deleting task: {}".format(e))
     return redirect(url_for("index"))
 
 if __name__ == "__main__":
