@@ -4,11 +4,10 @@ from bson.objectid import ObjectId  # For handling MongoDB's ObjectId
 
 app = Flask(__name__)
 
-
 # MongoDB connection
 # Connect to MongoDB Atlas using the provided connection string
-# client = MongoClient("mongodb+srv://test:test@cluster0.sxci1.mongodb.net/?retryWrites=true&w=majority")
-client = MongoClient("mongodb+srv://admin:123@cluster0.hh7q5.mongodb.net/?retryWrites=true&w=majority")
+client = MongoClient("mongodb+srv://admin:123@Cluster0/test?retryWrites=true&w=majority")
+
 # Database and Collection setup
 db = client.todo_app  # Database name
 todos = db.todos       # Collection name
