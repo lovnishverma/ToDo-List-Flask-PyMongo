@@ -6,8 +6,8 @@ app = Flask(__name__)
 
 # MongoDB connection
 # Connect to MongoDB Atlas using the provided connection string
-# client = MongoClient("mongodb+srv://test:test@cluster0.sxci1.mongodb.net/?retryWrites=true&w=majority")
-client = MongoClient("mongodb+srv://admin:test@test.hh7q5.mongodb.net/?retryWrites=true&w=majority&appName=test")
+client = MongoClient("mongodb+srv://test:test@cluster0.sxci1.mongodb.net/?retryWrites=true&w=majority")
+# client = MongoClient("mongodb+srv://admin:test@test.hh7q5.mongodb.net/?retryWrites=true&w=majority&appName=test")
 
 # Database and Collection setup
 db = client.todo_app  # Database name
