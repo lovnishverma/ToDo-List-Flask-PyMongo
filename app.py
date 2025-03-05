@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for
+from datetime import datetime
 from pymongo import MongoClient
-from bson.objectid import ObjectId  # For handling MongoDB's ObjectId
+from bson.objectid import ObjectId
+import pytz
 
 app = Flask(__name__)
 
@@ -22,12 +24,16 @@ def index():
     - Task description
     - Completion status (done or not done)
     """
+    ist = pytz.timezone("Asia/Kolkata")
+    current_datetime = datetime.now(ist).strftime("%d-%m-%Y %I:%M %p")
+
     try:
-        all_todos = todos.find()  # Retrieve all tasks from the "todos" collection
+        all_todos = list(todos.find())  # Convert cursor to a list to avoid cursor issues
     except Exception as e:
-        print("Error fetching tasks: {}".format(e))
-        all_todos = []
-    return render_template("index.html", todos=all_todos)
+        print("Error fetching tasks:", e)
+        all_todos = []  # Fallback to an empty list if there's an error
+
+    return render_template("index.html", todos=all_todos, datetime=current_datetime)
 
 # Route to add a new task
 @app.route("/add", methods=["POST"])
