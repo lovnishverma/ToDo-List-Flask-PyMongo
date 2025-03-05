@@ -23,7 +23,7 @@ def index():
     current_datetime = datetime.now(ist).strftime("%d-%m-%Y %I:%M %p")
 
     try:
-        all_todos = list(todos.find().sort("created_at", -1))  # Sort by latest task
+        all_todos = list(todos.find().sort("_id", -1))  # Sort by latest task
     except Exception as e:
         flash("Error fetching tasks!", "danger")
         all_todos = []  

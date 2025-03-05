@@ -6,7 +6,7 @@
     <link rel="icon" type="image/x-icon" href="https://cdn.glitch.global/fe6b1c62-8584-49f8-bfd0-017a3fdbea2d/images.png?v=1741159382343">
     <title>Update Task</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
- 
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
     <!-- Dark Mode Toggle -->
@@ -15,7 +15,7 @@
         <label class="form-check-label" for="darkModeToggle">Dark Mode</label>
     </div>
 
-    <div class="container">
+    <div class="container fade-in">
         <h1>Update Task</h1>
         <form action="{{ url_for('update_todo', task_id=task['_id']) }}" method="POST">
             <label for="updated_task">Task:</label>
@@ -26,9 +26,11 @@
                 value="{{ task['task'] }}"
                 required
             />
-            <button type="submit">Update</button>
+            <button type="submit" class="btn btn-primary">Update</button>
         </form>
-        <a href="{{ url_for('index') }}">Back to Tasks</a>
+        <a href="{{ url_for('index') }}" class="btn btn-success">Back to Tasks</a>
     </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>
