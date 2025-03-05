@@ -1,0 +1,28 @@
+/* Dark Mode Styling */
+        body.dark-mode {
+            background-color: #121212;
+            color: white;
+        }
+        .dark-mode .table {
+            color: white;
+        }
+        .dark-mode .table-light {
+            background-color: #333 !important;
+        }
+        .dark-mode .alert {
+            background-color: #222;
+            border-color: #444;
+            color: white;
+        }
+        .dark-mode .btn-close {
+            filter: invert(1);
+        }
+        .table-hover tbody tr:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+        /* Dark Mode Toggle Switch */
+        .dark-mode-switch {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+        }

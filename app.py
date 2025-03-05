@@ -6,7 +6,7 @@ import pytz
 import os
 
 app = Flask(__name__)
-app.secret_key = "your_secret_key_here"  # Required for flash messages
+app.secret_key = "nielit_secret_key_here"  # Required for flash messages
 
 # MongoDB connection
 MONGO_URI = os.getenv("MONGO_URI", "mongodb+srv://test:test@cluster0.sxci1.mongodb.net/?retryWrites=true&w=majority")

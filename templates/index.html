@@ -9,22 +9,93 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
-
+  <link rel="stylesheet" href="{{ url_for('static', filename='/css/style.css') }}">
+    <style>
+        /* Dark Mode Styling */
+        body.dark-mode {
+            background-color: #121212;
+            color: white;
+        }
+        .dark-mode .table {
+            color: white;
+        }
+        .dark-mode .table-light {
+            background-color: #333 !important;
+        }
+        .dark-mode .alert {
+            background-color: #222;
+            border-color: #444;
+            color: white;
+        }
+        .dark-mode .btn-close {
+            filter: invert(1);
+        }
+        .table-hover tbody tr:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+        /* Dark Mode Toggle Switch */
+        .dark-mode-switch {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+        }
+    </style>
     <script>
         function confirmDelete(taskId) {
             document.getElementById('deleteConfirmBtn').setAttribute('href', '/delete/' + taskId);
             var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
             deleteModal.show();
         }
+
+        // Dark Mode Toggle
+        function toggleDarkMode() {
+            document.body.classList.toggle("dark-mode");
+            localStorage.setItem("darkMode", document.body.classList.contains("dark-mode"));
+        }
+
+        // Load dark mode preference
+        document.addEventListener("DOMContentLoaded", function() {
+            if (localStorage.getItem("darkMode") === "true") {
+                document.body.classList.add("dark-mode");
+                document.getElementById("darkModeToggle").checked = true;
+            }
+        });
     </script>
 </head>
 <body>
+    <!-- Dark Mode Toggle -->
+    <div class="form-check form-switch dark-mode-switch">
+        <input class="form-check-input" type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+        <label class="form-check-label" for="darkModeToggle">Dark Mode</label>
+    </div>
+
     <div class="container mt-5">
         <h1 class="text-center mb-4">To-Do List</h1>
         <marquee><h3 class="text-center mb-4">MongoDB (CRUD operations, Aggregation)</h3></marquee>
 
         <center><p style="color:green;">{{ datetime }}</p></center>
-        
+<!-- Link to Summary Page -->
+        <div class="text-center mt-4">
+            <a href="/summary" class="btn btn-info">
+                <i class="bi bi-bar-chart-line"></i> View Task Summary
+            </a><div>
+          <br>
+          </div>
+        </div>
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="container mt-3">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
         <!-- Add Task Form -->
         <form action="/add" method="POST" class="mb-4">
             {% if csrf_token %}
@@ -81,12 +152,7 @@
             </tbody>
         </table>
 
-        <!-- Link to Summary Page -->
-        <div class="text-center mt-4">
-            <a href="/summary" class="btn btn-info">
-                <i class="bi bi-bar-chart-line"></i> View Task Summary
-            </a>
-        </div>
+        
     </div>
 
     <!-- Delete Confirmation Modal -->
