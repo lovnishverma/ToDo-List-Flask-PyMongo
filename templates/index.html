@@ -3,38 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="https://cdn.glitch.global/fe6b1c62-8584-49f8-bfd0-017a3fdbea2d/images.png?v=1741159382343">
     <title>To-Do List</title>
+    
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+
     <script>
         function confirmDelete(taskId) {
-            if (confirm("Are you sure you want to delete this task?")) {
-                window.location.href = "/delete/" + taskId;
-            }
+            document.getElementById('deleteConfirmBtn').setAttribute('href', '/delete/' + taskId);
+            var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+            deleteModal.show();
         }
     </script>
 </head>
 <body>
     <div class="container mt-5">
-        <h1 class="text-center mb-4">To-Do List</h1><marquee> <h3 class="text-center mb-4"> MongoDB (CRUD operations, Aggregation) </h3></marquee>
+        <h1 class="text-center mb-4">To-Do List</h1>
+        <marquee><h3 class="text-center mb-4">MongoDB (CRUD operations, Aggregation)</h3></marquee>
 
-  <center> <p style="color:green;">
-    {{datetime}}
-    </p></center>
-     
+        <center><p style="color:green;">{{ datetime }}</p></center>
+        
         <!-- Add Task Form -->
         <form action="/add" method="POST" class="mb-4">
+            {% if csrf_token %}
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            {% endif %}
             <div class="input-group">
                 <input type="text" name="task" class="form-control" placeholder="Enter a new task" required>
-                <button type="submit" class="btn btn-primary">Add Task</button>
+                <button type="submit" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Add Task</button>
             </div>
         </form>
 
         <!-- Tasks Table -->
-        <table class="table table-bordered">
+        <table class="table table-bordered table-hover">
             <thead class="table-light">
                 <tr>
+                    <th>Sr No.</th>
                     <th>Task</th>
+                    <th>Created At</th>
                     <th>Status</th>
                     <th>Actions</th>
                 </tr>
@@ -42,7 +50,9 @@
             <tbody>
                 {% for todo in todos %}
                 <tr>
+                    <td>{{ loop.index }}</td>
                     <td>{{ todo.task }}</td>
+                    <td>{{ todo.created_at }}</td>
                     <td>
                         {% if todo.done %}
                         <span class="badge bg-success">Completed</span>
@@ -53,15 +63,18 @@
                     <td>
                         {% if not todo.done %}
                         <!-- Mark as Complete -->
-                        <a href="/complete/{{ todo._id }}" class="btn btn-success btn-sm">Mark Complete</a>
+                        <a href="/complete/{{ todo._id }}" class="btn btn-success btn-sm">
+                            <i class="bi bi-check-lg"></i> Complete
+                        </a>
                         {% endif %}
                         <!-- Edit Task -->
-                        
-                      <a href="{{ url_for('update_todo', task_id=todo['_id']) }}" class="btn btn-warning btn-sm">Edit</a>
-
+                        <a href="{{ url_for('update_todo', task_id=todo['_id']) }}" class="btn btn-warning btn-sm">
+                            <i class="bi bi-pencil-square"></i> Edit
+                        </a>
                         <!-- Delete Task -->
-               
-                      <a class="btn btn-danger btn-sm" href="javascript:void(0);" onclick="confirmDelete('{{ todo._id }}') ">Delete</a> 
+                        <a class="btn btn-danger btn-sm" href="javascript:void(0);" onclick="confirmDelete('{{ todo._id }}')">
+                            <i class="bi bi-trash"></i> Delete
+                        </a> 
                     </td>
                 </tr>
                 {% endfor %}
@@ -70,7 +83,28 @@
 
         <!-- Link to Summary Page -->
         <div class="text-center mt-4">
-            <a href="/summary" class="btn btn-info">View Task Summary</a>
+            <a href="/summary" class="btn btn-info">
+                <i class="bi bi-bar-chart-line"></i> View Task Summary
+            </a>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this task? This action cannot be undone.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <a id="deleteConfirmBtn" href="#" class="btn btn-danger">Delete</a>
+                </div>
+            </div>
         </div>
     </div>
 
