@@ -1,125 +1,145 @@
-/* Centered container with soft shadow */
-        .container {
-            max-width: 500px;
-            background: #fff;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            transition: 0.3s;
-        }
+/* Mobile App Reset & Typography */
+body {
+    background-color: #f8f9fa;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-tap-highlight-color: transparent; /* Remove blue flash on tap */
+    margin: 0;
+    padding: 0;
+}
 
-        .container:hover {
-            transform: scale(1.02);
-            box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.15);
-        }
+/* App Header */
+.app-header {
+    background: #007bff;
+    color: white;
+    padding: 15px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
 
-        h1 {
-            color: #444;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
+/* Main Container */
+.app-container {
+    max-width: 100%;
+    padding-bottom: 90px; /* Space for the bottom input bar */
+}
 
-        label {
-            font-weight: bold;
-            margin-bottom: 5px;
-            color: #666;
-        }
+/* Limit width on desktop so it looks like a phone emulator */
+@media (min-width: 768px) {
+    body { background: #e9ecef; display: flex; flex-direction: column; align-items: center; }
+    .app-header, .app-container, .bottom-input-bar { width: 100%; max-width: 450px; }
+    .app-header { border-radius: 0 0 15px 15px; margin-top: 10px; }
+    .app-container { background: #fff; min-height: 90vh; box-shadow: 0px 4px 15px rgba(0,0,0,0.05); }
+    .bottom-input-bar { margin: 0 auto; border-radius: 15px 15px 0 0; }
+}
 
-        input[type="text"] {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: 0.3s;
-        }
+/* Task Cards */
+.task-card {
+    background: #fff;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background 0.2s ease;
+}
+.task-card:active { background: #f1f3f5; }
 
-        input[type="text"]:focus {
-            border-color: #4CAF50;
-            outline: none;
-            box-shadow: 0px 0px 5px rgba(76, 175, 80, 0.5);
-        }
+.task-title {
+    color: #333;
+    transition: color 0.3s;
+}
 
-        .btn {
-            width: 100%;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            transition: 0.3s;
-        }
+/* Completed Task Styling */
+.task-done .task-title {
+    text-decoration: line-through;
+    color: #adb5bd;
+}
 
-        .btn-primary {
-            background: #007bff;
-            border: none;
-        }
+/* Floating Bottom Input Bar */
+.bottom-input-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    padding: 15px 20px;
+    box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
+    z-index: 1000;
+}
 
-        .btn-primary:hover {
-            background: #0056b3;
-        }
+.bottom-input-bar input:focus {
+    box-shadow: none;
+    border-color: #007bff;
+}
 
-        .btn-success {
-            margin-top: 10px;
-            background: #28a745;
-            border: none;
-        }
+.add-btn {
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-        .btn-success:hover {
-            background: #218838;
-        }
+/* Action Buttons (Edit/Delete) */
+.action-btn {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+}
 
-        /* Dark Mode */
-        body.dark-mode {
-            background-color: #121212;
-            color: white;
-        }
+/* Toasts / Flash Messages */
+.toast-container {
+    position: sticky;
+    top: 60px;
+    z-index: 999;
+}
 
-        .dark-mode .container {
-            background: #222;
-            box-shadow: 0px 8px 20px rgba(255, 255, 255, 0.1);
-        }
+/* =========================================
+   DARK MODE
+========================================= */
+body.dark-mode {
+    background-color: #121212;
+    color: #e0e0e0;
+}
 
-        .dark-mode h1 {
-            color: #ddd;
-        }
+.dark-mode .app-header {
+    background: #1f1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
 
-        .dark-mode label {
-            color: #bbb;
-        }
+.dark-mode .app-container {
+    background: #121212;
+}
 
-        .dark-mode input[type="text"] {
-            background: #333;
-            color: white;
-            border: 2px solid #555;
-        }
+.dark-mode .task-card {
+    background: #1e1e1e;
+    border-bottom: 1px solid #2c2c2c;
+}
 
-        .dark-mode .btn-primary {
-            background: #5cb85c;
-        }
+.dark-mode .task-card:active {
+    background: #2a2a2a;
+}
 
-        .dark-mode .btn-primary:hover {
-            background: #4cae4c;
-        }
+.dark-mode .task-title {
+    color: #e0e0e0;
+}
 
-        .dark-mode .btn-success {
-            background: #17a2b8;
-        }
+.dark-mode .bottom-input-bar {
+    background: #1f1f1f;
+    border-top: 1px solid #2c2c2c;
+}
 
-        .dark-mode .btn-success:hover {
-            background: #138496;
-        }
+.dark-mode input[type="text"] {
+    background: #2c2c2c;
+    color: white;
+    border-color: #444;
+}
 
-        /* Dark Mode Toggle */
-        .dark-mode-switch {
-            position: fixed;
-            top: 15px;
-            right: 15px;
-        }
+.dark-mode .modal-content {
+    background: #1e1e1e;
+    color: white;
+}
 
-        /* Responsive */
-        @media (max-width: 600px) {
-            .container {
-                padding: 20px;
-            }
-        }
+.dark-mode .action-btn {
+    background: #2c2c2c;
+}
