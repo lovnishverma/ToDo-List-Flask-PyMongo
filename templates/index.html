@@ -2,46 +2,33 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#007bff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>To-Do List</title>
     
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="https://cdn.glitch.global/fe6b1c62-8584-49f8-bfd0-017a3fdbea2d/images.png?v=1741159382343">
-
-    <!-- Bootstrap CSS -->
+    <link rel="icon" type="image/x-icon" href="https://cdn.glitch.global/fe6b1c62-8584-49f8-bfd0-017a3fdbea2d/images.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-
 </head>
 <body>
 
-    <!-- Dark Mode Toggle -->
-    <div class="form-check form-switch dark-mode-switch">
-        <input class="form-check-input" type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
-        <label class="form-check-label" for="darkModeToggle">Dark Mode</label>
-    </div>
-
-    <div class="container mt-5 fade-in">
-        <h1 class="text-center mb-4">To-Do List</h1>
-        <marquee><h3 class="text-center mb-4">MongoDB (CRUD operations, Aggregation)</h3></marquee>
-
-        <center><p style="color:green;">{{ datetime }}</p></center>
-
-        <!-- Link to Summary Page -->
-        <div class="text-center mt-4">
-            <a href="/summary" class="btn btn-info">
-                <i class="bi bi-bar-chart-line"></i> View Task Summary
-            </a>
-            <br><br>
+    <header class="app-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0 fw-bold">My Tasks</h5>
+        <div>
+            <a href="/summary" class="text-white me-3 text-decoration-none fs-5"><i class="bi bi-bar-chart-fill"></i></a>
+            <i class="bi bi-moon-fill fs-5" id="darkModeToggleIcon" onclick="toggleDarkMode()" style="cursor: pointer;"></i>
         </div>
+    </header>
 
-        <!-- Flash Messages -->
+    <div class="app-container">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                <div class="container mt-3">
+                <div class="toast-container p-2">
                     {% for category, message in messages %}
-                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm" role="alert">
                             {{ message }}
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
@@ -50,83 +37,65 @@
             {% endif %}
         {% endwith %}
 
-        <!-- Add Task Form -->
-        <form action="/add" method="POST" class="mb-4">
+        <div class="task-list mt-2">
+            {% for todo in todos %}
+            <div class="task-card d-flex align-items-center p-3 {% if todo.done %}task-done{% endif %}">
+                
+                <div class="me-3">
+                    {% if not todo.done %}
+                    <a href="/complete/{{ todo._id }}" class="text-success fs-3"><i class="bi bi-circle"></i></a>
+                    {% else %}
+                    <span class="text-muted fs-3"><i class="bi bi-check-circle-fill"></i></span>
+                    {% endif %}
+                </div>
+
+                <div class="flex-grow-1">
+                    <h6 class="mb-0 task-title fw-semibold">{{ todo.task }}</h6>
+                    <small class="text-muted" style="font-size: 0.75rem;">{{ todo.created_at }}</small>
+                </div>
+
+                <div class="ms-2 d-flex">
+                    <a href="{{ url_for('update_todo', task_id=todo['_id']) }}" class="btn btn-light btn-sm rounded-circle me-1 action-btn text-warning">
+                        <i class="bi bi-pencil-fill"></i>
+                    </a>
+                    <a href="javascript:void(0);" onclick="confirmDelete('{{ todo._id }}')" class="btn btn-light btn-sm rounded-circle action-btn text-danger">
+                        <i class="bi bi-trash-fill"></i>
+                    </a> 
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="bottom-input-bar">
+        <form action="/add" method="POST" class="d-flex align-items-center m-0">
             {% if csrf_token %}
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             {% endif %}
-            <div class="input-group">
-                <input type="text" name="task" class="form-control" placeholder="Enter a new task" required>
-                <button type="submit" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Add Task</button>
-            </div>
+            <input type="text" name="task" class="form-control rounded-pill me-2 px-4 shadow-sm py-2" placeholder="Write a new task..." required>
+            <button type="submit" class="btn btn-primary rounded-circle shadow add-btn">
+                <i class="bi bi-arrow-up-short fs-4"></i>
+            </button>
         </form>
-
-        <!-- Tasks Table -->
-        <table class="table table-bordered table-hover fade-in">
-            <thead class="table-light">
-                <tr>
-                    <th>Sr No.</th>
-                    <th>Task</th>
-                    <th>Created At</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for todo in todos %}
-                <tr>
-                    <td>{{ loop.index }}</td>
-                    <td>{{ todo.task }}</td>
-                    <td>{{ todo.created_at }}</td>
-                    <td>
-                        {% if todo.done %}
-                        <span class="badge bg-success">Completed</span>
-                        {% else %}
-                        <span class="badge bg-warning text-dark">Pending</span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if not todo.done %}
-                        <a href="/complete/{{ todo._id }}" class="btn btn-success btn-sm">
-                            <i class="bi bi-check-lg"></i> Complete
-                        </a>
-                        {% endif %}
-                        <a href="{{ url_for('update_todo', task_id=todo['_id']) }}" class="btn btn-warning btn-sm">
-                            <i class="bi bi-pencil-square"></i> Edit
-                        </a>
-                        <a class="btn btn-danger btn-sm" href="javascript:void(0);" onclick="confirmDelete('{{ todo._id }}')">
-                            <i class="bi bi-trash"></i> Delete
-                        </a> 
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
     </div>
 
-    <!-- Delete Confirmation Modal -->
-    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Are you sure you want to delete this task? This action cannot be undone.
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <a id="deleteConfirmBtn" href="#" class="btn btn-danger">Delete</a>
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-body text-center p-4">
+                    <i class="bi bi-exclamation-circle text-danger fs-1 mb-3"></i>
+                    <h5 class="fw-bold">Delete Task?</h5>
+                    <p class="text-muted">This action cannot be undone.</p>
+                    <div class="d-flex justify-content-center gap-2 mt-4">
+                        <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                        <a id="deleteConfirmBtn" href="#" class="btn btn-danger rounded-pill px-4">Delete</a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
-
 </body>
 </html>
